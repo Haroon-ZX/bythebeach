@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>IJsvogel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(180deg, #f5f8f2 0%, #eef5ed 35%, #fbfdfa 100%);
+      padding: 0;
+      color: #2c3a2f;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .main-container {
+      max-width: 100%;
+      margin: 0 auto;
+      background: transparent;
+    }
+
+    /* NAVIGATION BAR */
+    .navbar {
+      background: rgba(255, 255, 255, 0.97);
+      padding: 0.75rem 2rem;
+      min-height: 94px;
+      box-shadow: 0 6px 18px rgba(45, 74, 58, 0.08);
+      border-bottom: 1px solid rgba(209, 220, 214, 0.75);
+      position: relative;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      flex: 0 0 auto;
+      min-width: 0;
+      padding: 0.2rem 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .navbar-brand img {
+      display: block;
+      width: clamp(40px, 4vw, 55px);
+      height: auto;
+      max-height: 55px;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      color: #2f4f3c;
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .navbar.collapsed .navbar-brand,
+    .sidebar.collapsed .navbar-brand,
+    .sidebar.collapsed .sidebar-brand {
+      justify-content: center;
+    }
+
+    .navbar.collapsed .brand-text,
+    .sidebar.collapsed .brand-text {
+      display: none;
+    }
+
+    .sidebar-brand img {
+      display: block;
+      width: clamp(40px, 4vw, 55px);
+      height: auto;
+      max-height: 55px;
+      object-fit: contain;
+    }
+
+    .navbar-nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: #3d5a3d;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link:hover {
+      background: #f9c94d;
+      color: #5a3a0a;
+      transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+      background: #f9c94d;
+      color: #5a3a0a;
+      box-shadow: 0 4px 12px rgba(249, 201, 77, 0.3);
+    }
+
+    /* FIRST SCREEN - HERO SECTION */
+    .first-screen {
+      position: relative;
+      width: 100%;
+      height: 65vh;
+      min-height: 520px;
+      max-height: 750px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('ijsvogelF.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      z-index: 1;
+    }
+
+    .hero-background::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.14) 30%,
+        rgba(255, 255, 255, 0.20) 55%,
+        rgba(255, 255, 255, 0.28) 100%
+      );
+      z-index: 2;
+    }
+
+    .wave-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 28px;
+      z-index: 3;
+      opacity: 0.92;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 10;
+      padding: 1.2rem 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      max-width: 760px;
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #f9c94d;
+      color: #4a3a12;
+      padding: 0.55rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 10px 30px rgba(249, 201, 77, 0.24);
+      border: 1px solid rgba(249, 201, 77, 0.45);
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #212d21;
+      margin-bottom: 0.95rem;
+      line-height: 1.18;
+      letter-spacing: -0.6px;
+    }
+
+    .hero p {
+      color: #2f3f2f;
+      max-width: 620px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.7;
+    }
+
+    .hero > p:not(.hero-subtitle) {
+      display: none;
+    }
+
+    .hero-subtitle {
+      display: block;
+    }
+
+    .hero-highlights {
+      display: none;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.4rem;
+    }
+
+    .hero-highlights span {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      padding: 0.5rem 0.95rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-ctas {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 15;
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, #f9c94d, #f4a933);
+      color: #5a3a0a;
+      border: none;
+      border-radius: 100px;
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+      letter-spacing: 0.3px;
+      box-shadow: 0 8px 25px rgba(249, 201, 77, 0.4);
+      border: 1.5px solid rgba(249, 201, 77, 0.6);
+    }
+
+    .cta-btn:hover {
+      background: linear-gradient(135deg, #f4a933, #ef9221);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(249, 201, 77, 0.5);
+    }
+
+    /* ABOUT SECTION (new) */
+    .about-section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(243, 247, 245, 0.9);
+      border-radius: 2rem;
+      border: 1px solid rgba(209, 220, 214, 0.6);
+    }
+
+    .about-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .about-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+    }
+
+    .features-list {
+      list-style: disc inside;
+      padding-left: 1.3rem;
+      margin: 1.2rem 0;
+      column-count: 2;
+      column-gap: 1.5rem;
+    }
+
+    .features-list li {
+      margin-bottom: 0.9rem;
+      break-inside: avoid;
+      color: #2f3f2f;
+      line-height: 1.7;
+    }
+
+    .about-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.8rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      flex: 1;
+      min-width: 250px;
+      border: 1px solid #f0f3f0;
+    }
+
+    .about-card.text-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .about-card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .about-image {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .capacities-box {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      border: 1px solid #f0f3f0;
+      margin-top: 1rem;
+    }
+    .capacities-box h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #3d5a3d;
+      margin-bottom: 1rem;
+    }
+    .capacities-box ul {
+      list-style: none;
+    }
+    .capacities-box li {
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #e0e8e0;
+    }
+
+    /* SECOND SCREEN (packages, custom, quote) unchanged */
+    .second-screen {
+      margin-top: 4rem;
+      scroll-margin-top: 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .package-card {
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .package-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-accent {
+      height: 5px;
+      width: 60px;
+      border-radius: 3px;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge-package {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .package-card h2 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 0.8rem;
+    }
+
+    .user-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 0.8rem 0;
+    }
+
+    .user-tag {
+      background: #f3f4f6;
+      padding: 0.35rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .capacity {
+      font-size: 0.8rem;
+      background: #f3f4f6;
+      color: #4b5563;
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 50px;
+      margin: 0.8rem 0;
+    }
+
+    .space-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1rem 0;
+    }
+
+    .space-pill {
+      background: #f3f4f6;
+      padding: 0.35rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 1.2rem 0;
+    }
+
+    .feature-list li {
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      color: #495057;
+      border-bottom: 1px dashed #e8ede7;
+    }
+
+    .book-btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      width: 100%;
+      border: 1.5px solid;
+      border-radius: 1.2rem;
+      padding: 0.8rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      background: transparent;
+    }
+
+    .corporate .card-accent { background: #2563eb; }
+    .corporate .badge-package { background: #dbeafe; color: #1e40af; }
+    .corporate h2 { color: #1e40af; }
+    .corporate .book-btn { border-color: #3b82f6; color: #1e40af; background: #f0f9ff; }
+    .corporate .book-btn:hover { background: #3b82f6; color: white; }
+
+    .sports .card-accent { background: #16a34a; }
+    .sports .badge-package { background: #dcedc8; color: #2d5016; }
+    .sports h2 { color: #2d5016; }
+    .sports .book-btn { border-color: #22c55e; color: #2d5016; background: #f0fdf4; }
+    .sports .book-btn:hover { background: #22c55e; color: white; }
+
+    .event .card-accent { background: #d97706; }
+    .event .badge-package { background: #fed7aa; color: #b45309; }
+    .event h2 { color: #9a3412; }
+    .event .book-btn { border-color: #f59e0b; color: #b45309; background: #fffbeb; }
+    .event .book-btn:hover { background: #f59e0b; color: white; }
+
+    .winter .card-accent { background: #00576b; }
+    .winter .badge-package { background: #dff4f8; color: #00576b; }
+    .winter h2 { color: #00576b; }
+    .winter .book-btn { border-color: #00576b; color: #00576b; background: #eef8fb; }
+    .winter .book-btn:hover { background: #00576b; color: white; }
+
+    .custom-section {
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 2.5rem;
+      margin-top: 2rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .custom-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .form-row {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 1.5rem;
+    }
+
+    .form-row label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1f2937;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .options-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .option-chip {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 2.5rem;
+      padding: 0.7rem 1.4rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #475569;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .option-chip:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      color: #1e40af;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+
+    .option-chip.selected {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-color: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+    }
+
+    .option-chip.selected:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-color: #1d4ed8;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .furniture-item {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 1.2rem;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .furniture-item:hover {
+      border-color: #3b82f6;
+      background: #f8faff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+
+    .furniture-item input {
+      accent-color: #3b82f6;
+      width: 1.2rem;
+      height: 1.2rem;
+      cursor: pointer;
+    }
+
+    .furniture-item label {
+      cursor: pointer;
+      color: #1f2937;
+      font-weight: 600;
+    }
+
+    .summary-box {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border-radius: 1.5rem;
+      padding: 1.8rem;
+      margin: 1.8rem 0;
+      border-left: 5px solid #3b82f6;
+      color: #0c4a6e;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+    }
+
+    .summary-box h3 {
+      color: #1e40af;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .summary-box p {
+      color: #334155;
+      line-height: 1.6;
+      margin: 0.5rem 0;
+    }
+
+    .custom-people-input {
+      width: 100%;
+      max-width: 260px;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 1.2rem;
+      padding: 0.85rem 1rem;
+      color: #1f2937;
+      font-size: 1rem;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .custom-people-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .quantities-title {
+      display: block;
+      margin: 1.2rem 0 0.8rem;
+      color: #1e40af;
+      font-size: 1rem;
+    }
+
+    .quantity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .quantity-card {
+      background: #ffffff;
+      border: 1px solid rgba(59, 130, 246, 0.18);
+      border-radius: 0.9rem;
+      padding: 0.85rem;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+    }
+
+    .quantity-card strong {
+      display: block;
+      color: #0f172a;
+      font-size: 1.3rem;
+      line-height: 1.1;
+    }
+
+    .quantity-card span {
+      color: #475569;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .quantity-note {
+      color: #475569;
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.6rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border: none;
+      border-radius: 1.2rem;
+      padding: 1rem;
+      width: 100%;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .quote-section {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fffdf7 0%, #ffffff 100%);
+      border-radius: 24px;
+      padding: 3rem;
+      margin-top: 2rem;
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      box-shadow: 0 18px 45px rgba(45, 74, 58, 0.11);
+    }
+
+    .quote-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #3d5a3d, #f9c94d);
+    }
+
+    .quote-section h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #20382d;
+      line-height: 1.2;
+      margin-bottom: 0.45rem;
+    }
+
+    .quote-section > p {
+      max-width: 680px;
+      color: #52645a;
+      font-size: 1rem;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+
+    .quote-form {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.35rem 1.5rem;
+    }
+
+    .quote-section .form-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .quote-section .form-group label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #20382d;
+      margin-bottom: 0.65rem;
+      display: block;
+    }
+
+    .quote-section .form-group input,
+    .quote-section .form-group select,
+    .quote-section .form-group textarea {
+      padding: 1rem 1.1rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      background: #fafaf7;
+      color: #1f2937;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .quote-section .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .quote-section .form-group input:hover,
+    .quote-section .form-group select:hover,
+    .quote-section .form-group textarea:hover {
+      border-color: #94a3b8;
+    }
+
+    .quote-section .form-group input:focus,
+    .quote-section .form-group select:focus,
+    .quote-section .form-group textarea:focus {
+      outline: none;
+      border-color: #3d5a3d;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(61, 90, 61, 0.14);
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .quote-btn {
+      background: linear-gradient(135deg, #3d5a3d, #2f4f3c);
+      border: none;
+      border-radius: 999px;
+      padding: 1rem 2.75rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 24px rgba(47, 79, 60, 0.24);
+      align-self: flex-start;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .quote-btn:hover {
+      background: linear-gradient(135deg, #f9c94d, #f4a933);
+      color: #3c2a05;
+      box-shadow: 0 14px 28px rgba(244, 169, 51, 0.28);
+      transform: translateY(-2px);
+    }
+
+    .proposal-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+    }
+
+    .proposal-helper {
+      color: #64748b;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .quote-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    /* ========== PREVIEW SECTION ========== */
+    .preview-section {
+      padding: 3rem 2rem;
+      background: rgba(246, 248, 246, 0.95);
+      text-align: center;
+      border-radius: 2rem;
+      border: 1px solid rgba(209, 220, 214, 0.6);
+    }
+
+    .preview-section h2 {
+      color: #1f2937;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .preview-section > p {
+      color: #6b7280;
+      font-size: 1rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .preview-card {
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .preview-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+      border-color: #60a5fa;
+    }
+
+    .preview-img {
+      background: #f3f4f6;
+      height: 210px;
+      width: 100%;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.8);
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+      z-index: 1;
+    }
+
+    .image-arrow:hover {
+      transform: translateY(-50%) scale(1.05);
+      background: rgba(255,255,255,0.95);
+    }
+
+    .image-arrow.left {
+      left: 12px;
+    }
+
+    .image-arrow.right {
+      right: 12px;
+    }
+
+    .view-more {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #1f2937;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.92);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+      backdrop-filter: blur(4px);
+    }
+
+    .thumbnail-row {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .thumb {
+      width: 60px;
+      height: 48px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: #f3f4f6;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      flex: 0 0 auto;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .thumb.active {
+      border-color: #f9c94d;
+      box-shadow: 0 0 0 3px rgba(249, 201, 77, 0.2);
+    }
+
+    .thumb.active::before {
+      border-radius: 12px;
+    }
+
+    .thumb:hover {
+      transform: translateY(-1px);
+    }
+
+    .preview-card .preview-hover {
+      margin-top: 0.25rem;
+    }
+
+    .preview-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .preview-card p {
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .preview-hover {
+      opacity: 0;
+      transition: opacity 0.2s;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #f4a933;
+      text-align: center;
+    }
+
+    .preview-card:hover .preview-hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .preview-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .preview-card p {
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .preview-hover {
+      opacity: 0;
+      transition: opacity 0.2s;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #f4a933;
+      text-align: center;
+    }
+
+    .preview-card:hover .preview-hover {
+      opacity: 1;
+    }
+
+    .how-it-works {
+      margin-top: 3rem;
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .how-it-works h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1.5rem;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .step-icon {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      margin: 0 auto 1rem;
+      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .step h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    /* ========== PLANNER SECTION ========== */
+    .planner-section {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .planner-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .planner-sub {
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+
+    .planner-controls {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      background: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .control-group select,
+    .control-group input {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 2rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    .control-group select:focus,
+    .control-group input:focus {
+      outline: none;
+      border-color: #3d5a3d;
+      box-shadow: 0 0 0 3px rgba(61, 90, 61, 0.1);
+    }
+
+    .zones-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1rem 0 2rem 0;
+    }
+
+    .zone-chip {
+      background: #f3f4f6;
+      border: 2px solid #e5e7eb;
+      border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: #4b5563;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .zone-chip:hover {
+      border-color: #3d5a3d;
+      background: #f0f8f3;
+    }
+
+    .zone-chip.selected {
+      background: #3d5a3d;
+      color: white;
+      border-color: #3d5a3d;
+      box-shadow: 0 4px 12px rgba(61, 90, 61, 0.3);
+    }
+
+    .recommendation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .rec-card {
+      background: #fffbf0;
+      border-radius: 1.2rem;
+      padding: 1.5rem;
+      border-left: 5px solid #f9c94d;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .rec-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .rec-card h4 {
+      color: #854d0e;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rec-card p {
+      font-size: 0.9rem;
+      margin: 0.6rem 0;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .preview-btn {
+      background: linear-gradient(135deg, #3d5a3d, #2f4f3c);
+      color: white;
+      border: none;
+      border-radius: 2rem;
+      padding: 0.9rem 2.5rem;
+      font-weight: 700;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 12px rgba(61, 90, 61, 0.2);
+    }
+
+    .preview-btn:hover {
+      background: linear-gradient(135deg, #2f4f3c, #1f3a2b);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(61, 90, 61, 0.3);
+    }
+
+    .planner-label {
+      font-weight: 700;
+      color: #1f2937;
+      margin: 1.5rem 0 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    @media (max-width: 768px) {
+      .planner-section {
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+      }
+      .planner-controls {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .control-group {
+        min-width: 100%;
+      }
+      .zones-selector {
+        gap: 0.6rem;
+      }
+      .zone-chip {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+      .recommendation-grid {
+        grid-template-columns: 1fr;
+      }
+      .planner-title {
+        font-size: 1.4rem;
+      }
+    }
+
+    .site-footer {
+      margin: 3rem 0 0;
+      padding: 2.2rem 2rem 1.35rem;
+      background: linear-gradient(135deg, #20382d 0%, #2f4f3c 58%, #35556a 100%);
+      border-top: 4px solid #f4a933;
+      color: #dbe7dd;
+      box-shadow: 0 -10px 30px rgba(32, 56, 45, 0.12);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .footer-brand {
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .footer-links a,
+    .social-link {
+      color: #dbe7dd;
+      text-decoration: none;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+
+    .footer-links a {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .footer-links a:hover,
+    .social-link:hover {
+      color: #f9c94d;
+    }
+
+    .footer-social {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.7rem;
+      margin-left: auto;
+    }
+
+    .social-link {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .social-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .social-link[aria-label="Facebook"]:hover {
+      background: #1877f2;
+      border-color: #1877f2;
+      color: #ffffff;
+    }
+
+    .social-link[aria-label="Instagram"]:hover {
+      background: linear-gradient(135deg, #f58529, #dd2a7b 55%, #515bd4);
+      border-color: #dd2a7b;
+      color: #ffffff;
+    }
+
+    .social-link[aria-label="LinkedIn"]:hover {
+      background: #0a66c2;
+      border-color: #0a66c2;
+      color: #ffffff;
+    }
+
+    .social-link svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+    }
+
+    .footer-credit {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      color: #b7c5d3;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        min-height: auto;
+      }
+      .navbar-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+      }
+      .navbar-brand img {
+        width: 48px;
+        max-height: 48px;
+      }
+      .first-screen {
+        height: 65vh;
+        min-height: 450px;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 0.95rem;
+      }
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+      .cta-btn {
+        width: 100%;
+        max-width: 280px;
+      }
+      .packages-grid, .preview-grid {
+        grid-template-columns: 1fr;
+      }
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .custom-section, .quote-section {
+        padding: 1.5rem;
+      }
+      .quote-form {
+        grid-template-columns: 1fr;
+      }
+      .quote-section h2 {
+        font-size: 1.7rem;
+      }
+      .proposal-actions {
+        align-items: stretch;
+        text-align: center;
+      }
+      .quote-btn {
+        width: 100%;
+        min-width: 0;
+      }
+      .proposal-helper {
+        text-align: center;
+      }
+      .about-grid {
+        flex-direction: column;
+      }
+      .about-card.text-card {
+        display: flex;
+        flex-direction: column;
+      }
+      .about-image {
+        margin-top: 0;
+      }
+      .site-footer {
+        margin: 2rem 1rem 0;
+        padding: 1.6rem 1.2rem 1rem;
+      }
+      .footer-main {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      .footer-brand {
+        white-space: normal;
+      }
+      .footer-links {
+        gap: 0.8rem;
+      }
+      .footer-social {
+        justify-content: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- NAVIGATION BAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img src="logo1.png" alt="IJsvogel Logo">
+    <span class="brand-text">IJsvogel</span>
+  </div>
+  <div class="navbar-nav">
+    <a href="#home" class="nav-link active">Home</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#planner" class="nav-link">Planner</a>
+    <a href="#preview" class="nav-link">Experience Preview</a>
+    <a href="#packages" class="nav-link">Packages</a>
+    <a href="#create" class="nav-link">Create Package</a>
+    <a href="#booking" class="nav-link">Booking</a>
+  </div>
+</nav>
+
+<div class="main-container">
+  <!-- FIRST SCREEN - HERO (updated) -->
+  <div class="first-screen" id="home">
+    <div class="hero-background"></div>
+    <svg class="wave-top" viewBox="0 0 1200 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 4 C 150 12 300 0 450 4 S 750 12 900 4 S 1050 8 1200 4 L1200 28 L0 28 Z" fill="white" opacity="0.95" />
+    </svg>
+    <div class="hero">
+      <div class="hero-badge">IJSVOGEL | ZILVERMEER</div>
+      <h1>All-season event & experience space at IJsvogel</h1>
+      <p>From summer beach vibes to cozy winter gatherings, IJsvogel offers a flexible venue for meetings, events, workshops, and social experiences — all in one unique location at Zilvermeer.</p>
+      <p class="hero-subtitle">From summer beach vibes to cozy winter gatherings, IJsvogel offers a flexible venue for meetings, events, workshops, and social experiences &mdash; all in one unique location at Zilvermeer.</p>
+      <div class="hero-highlights" aria-label="IJsvogel highlights">
+        <span>Meetings</span>
+        <span>Events</span>
+        <span>Workshops</span>
+        <span>Social experiences</span>
+      </div>
+      <div class="hero-ctas">
+        <button class="cta-btn" onclick="document.getElementById('packages').scrollIntoView({ behavior: 'smooth' });">View Packages</button>
+        <button class="cta-btn" onclick="document.getElementById('create').scrollIntoView({ behavior: 'smooth' });">Create Your Own Package</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW ABOUT IJSVOGEL SECTION -->
+  <div class="about-section" id="about">
+    <h2 class="about-title">About IJsvogel – Flexible Venue at Zilvermeer</h2>
+    <div class="about-grid">
+      <div class="about-card text-card">
+        <div class="about-card-body">
+          <p>Located at the Zilvermeer recreational domain, IJsvogel is a multifunctional venue designed to adapt to different user needs and seasons.</p>
+          <p>In summer, the space connects directly with the beach atmosphere — offering outdoor activities, social gatherings, and vibrant events.</p>
+          <p>In winter, IJsvogel transforms into a comfortable indoor environment for meetings, workshops, and cozy social experiences, maintaining activity throughout the year.</p>
+        </div>
+        <img src="ijsvogelAbout.jpg" alt="IJsvogel venue" class="about-image">
+      </div>
+      <div class="about-card">
+        <h3>Key Features</h3>
+        <ul class="features-list">
+          <li>Beach & nature views</li>
+          <li>Flexible layouts (meeting, workshop, event)</li>
+          <li>Easy access & nearby parking</li>
+          <li>Catering & bar services available</li>
+        </ul>
+        <div class="capacities-box">
+          <h3>Package Capacities</h3>
+          <ul>
+            <li>Corporate Package: 100 – 300 people</li>
+            <li>Sports Group: 50 – 200 people</li>
+            <li>Event / Social: 250 – 500 people</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE PREVIEW SECTION (unchanged) -->
+  <div class="preview-section" id="preview">
+    <h2>Preview Your Experience</h2>
+    <p>Explore different possible setups of IJsvogel spaces for various activities.</p>
+    <div class="preview-grid">
+      <div class="preview-card" data-preview="forest">
+        <div class="preview-img">
+          <button class="image-arrow left" aria-label="Previous Forest Hall image"><i class="fas fa-chevron-left"></i></button>
+          <img src="./eb1.png" alt="Forest Hall event space preview">
+          <button class="image-arrow right" aria-label="Next Forest Hall image"><i class="fas fa-chevron-right"></i></button>
+          <div class="view-more"><i class="fas fa-images"></i> View more images</div>
+        </div>
+        <div class="thumbnail-row">
+          <button class="thumb active" data-src="./eb1.png" aria-label="Forest Hall image 1"></button>
+          <button class="thumb" data-src="./eb2.png" aria-label="Forest Hall image 2"></button>
+          <button class="thumb" data-src="./eb3.png" aria-label="Forest Hall image 3"></button>
+        </div>
+        <div class="preview-tag">Event space</div>
+        <h3>Beach side</h3>
+        <p>Beach side offers a bright, open environment ideal for social gatherings, networking and informal events close to the water.</p>
+        <div class="preview-hover">Beach side preview</div>
+      </div>
+
+      <div class="preview-card" data-preview="beach">
+        <div class="preview-img">
+          <button class="image-arrow left" aria-label="Previous Beach side image"><i class="fas fa-chevron-left"></i></button>
+          <img src="./es2.png" alt="Beach side event space preview">
+          <button class="image-arrow right" aria-label="Next Beach side image"><i class="fas fa-chevron-right"></i></button>
+          <div class="view-more"><i class="fas fa-images"></i> View more images</div>
+        </div>
+        <div class="thumbnail-row">
+          <button class="thumb active" data-src="./es2.png" aria-label="Beach side image 1"></button>
+          <button class="thumb" data-src="./es3.png" aria-label="Beach side image 2"></button>
+          <button class="thumb" data-src="./es4.png" aria-label="Beach side image 3"></button>
+        </div>
+        <div class="preview-tag">Event space</div>
+        <h3>Forest Hall</h3>
+        <p>Forest Hall is designed for large events, conferences and flexible meeting layouts with strong visual connection to nature.</p>
+        <div class="preview-hover">Forest Hall preview</div>
+      </div>
+
+      <div class="preview-card" data-preview="treehouse">
+        <div class="preview-img">
+          <button class="image-arrow left" aria-label="Previous Treehouse Room image"><i class="fas fa-chevron-left"></i></button>
+          <img src="./et0.png" alt="Treehouse / terrace room preview">
+          <button class="image-arrow right" aria-label="Next Treehouse Room image"><i class="fas fa-chevron-right"></i></button>
+          <div class="view-more"><i class="fas fa-images"></i> View more images</div>
+        </div>
+        <div class="thumbnail-row">
+          <button class="thumb active" data-src="./et0.png" aria-label="Treehouse Room image 1"></button>
+          <button class="thumb" data-src="./et1.png" aria-label="Treehouse Room image 2"></button>
+          <button class="thumb" data-src="./eventS.png" aria-label="Treehouse Room image 3"></button>
+        </div>
+        <div class="preview-tag">Event space</div>
+        <h3>Treehouse Room</h3>
+        <p>The Treehouse Room blends indoor comfort with terrace-style atmosphere for smaller group sessions, workshops and intimate gatherings.</p>
+        <div class="preview-hover">Treehouse Room preview</div>
+      </div>
+    </div>
+    <div class="how-it-works">
+      <h3>How It Works</h3>
+      <div class="steps">
+        <div class="step"><div class="step-icon">1</div><h4>Choose Layout</h4><p>Select from multiple pre-defined setups</p></div>
+        <div class="step"><div class="step-icon">2</div><h4>Adjust Setup</h4><p>Move furniture and adjust technology</p></div>
+        <div class="step"><div class="step-icon">3</div><h4>Transform Space</h4><p>One space can transform into multiple setups within minutes using flexible furniture.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPACE CONFIGURATION PLANNER -->
+  <div class="planner-section" id="planner">
+    <div class="planner-title">
+      <i class="fas fa-cogs" style="color:#3d5a3d;"></i>
+      Space Configuration Planner
+    </div>
+
+    <div class="planner-sub">
+      Select your package type, zones, and group size – we will prepare the ideal setup.
+    </div>
+
+    <div class="planner-controls">
+      <div class="control-group">
+        <label><i class="fas fa-tag"></i> Package</label>
+        <select id="packageTypeSelect">
+          <option value="corporate">Corporate Package</option>
+          <option value="sports">Sports Group</option>
+          <option value="event">Event / Social</option>
+          <option value="custom">Custom Package</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label><i class="fas fa-users"></i> Number of people</label>
+        <input type="number" id="peopleCountPlanner" value="80" min="1" max="500">
+      </div>
+    </div>
+
+    <div class="planner-label">
+      <i class="fas fa-map-marker-alt"></i> Select zones to activate (click on chips)
+    </div>
+
+    <div class="zones-selector" id="zonesContainer">
+      <div data-zone="entrance" class="zone-chip">Entrance Zone</div>
+      <div data-zone="meeting" class="zone-chip">Meeting Area</div>
+      <div data-zone="workshop" class="zone-chip">Workshop Area</div>
+      <div data-zone="outdoor" class="zone-chip">Outdoor Area</div>
+      <div data-zone="snack" class="zone-chip">Snack Bar</div>
+      <div data-zone="event" class="zone-chip">Event Space</div>
+      <div data-zone="hygiene" class="zone-chip">Hygiene Zone</div>
+    </div>
+
+    <div id="recommendationsArea" class="recommendation-grid"></div>
+
+    <button id="previewSetupBtn" class="preview-btn">
+      <i class="fas fa-eye"></i> Preview Setup & Layout
+    </button>
+  </div>
+
+  <!-- PACKAGES SECTION (unchanged) -->
+  <div class="second-screen" id="packages">
+    <div class="packages-grid">
+      <div class="package-card corporate"><div class="card-accent"></div><div class="badge-package">CORPORATE</div><h2>Corporate Package</h2><div class="user-tags"><span class="user-tag">Companies</span><span class="user-tag">Offices</span><span class="user-tag">Teams</span></div><div class="capacity">100 – 300 people</div><div class="space-list"><span class="space-pill">Meeting Area</span><span class="space-pill">Workshop Area</span><span class="space-pill">Entrance Zone</span><span class="space-pill">Snack Bar</span></div><ul class="feature-list"><li>Fully prepared meeting spaces</li><li>Workshop setup for team activities</li><li>Projectors, screens & furniture</li><li>Food & drinks via snack bar</li><li>Staff support & coordination</li></ul><button class="book-btn" onclick="alert('Corporate package request sent.')">Request Corporate</button></div>
+      <div class="package-card sports"><div class="card-accent"></div><div class="badge-package">SPORTS</div><h2>Sports Group</h2><div class="user-tags"><span class="user-tag">Cycling</span><span class="user-tag">Running</span><span class="user-tag">Communities</span></div><div class="capacity">50 – 200 people</div><div class="space-list"><span class="space-pill">Outdoor Area</span><span class="space-pill">Hygiene Zone</span><span class="space-pill">Snack Bar</span><span class="space-pill">Entrance</span></div><ul class="feature-list"><li>Start & finish hub</li><li>Storage & resting points</li><li>Shower & changing facilities</li><li>Recovery food & drinks</li><li>Easy group coordination</li></ul><button class="book-btn" onclick="alert('Sports package request sent.')">Request Sports</button></div>
+      <div class="package-card event"><div class="card-accent"></div><div class="badge-package">EVENT</div><h2>Event / Social</h2><div class="user-tags"><span class="user-tag">Organizers</span><span class="user-tag">Large Groups</span><span class="user-tag">Communities</span></div><div class="capacity">250 – 500 people</div><div class="space-list"><span class="space-pill">Event Space</span><span class="space-pill">Entrance Zone</span><span class="space-pill">Snack Bar</span><span class="space-pill">Outdoor</span></div><ul class="feature-list"><li>Large flexible event space</li><li>Bar & catering support</li><li>Lighting & open setup</li><li>Staff coordination & crowd flow</li><li>Nature-based location</li></ul><button class="book-btn" onclick="alert('Event package request sent.')">Request Event</button></div>
+    </div>
+
+    <!-- Custom Package Builder -->
+    <div class="custom-section" id="create">
+      <div class="custom-header"><h2>Custom Package – Design your own</h2><p>Mix spaces, activities, service level, time, furniture and bar setup.</p></div>
+      <div id="customApp">
+        <div class="form-row"><label>Step 1: Select spaces (minimum 2)</label><div class="options-group" id="spacesContainer"></div></div>
+        <div class="form-row"><label>Step 2: Number of people</label><input class="custom-people-input" type="number" id="customPeopleCount" value="50" min="1" max="500"></div>
+        <div class="form-row"><label>Step 3: Choose activities per space</label><div id="activitiesContainer" style="background:#faf9fe; border-radius:1rem; padding:0.8rem; min-height:80px;">Select spaces first</div></div>
+        <div class="form-row"><label>Step 4: Service level</label><div class="options-group" id="serviceContainer"><div class="option-chip" data-service="self">Self-organized</div><div class="option-chip" data-service="supported">Supported (staff help)</div><div class="option-chip" data-service="managed">Fully managed</div></div></div>
+        <div class="form-row"><label>Step 5: Time block</label><div class="options-group" id="timeContainer"><div class="option-chip" data-time="morning">Morning (9-12)</div><div class="option-chip" data-time="afternoon">Afternoon (12-17)</div><div class="option-chip" data-time="evening">Evening (17-21)</div><div class="option-chip" data-time="fullday">Full day</div></div></div>
+        <div class="form-row"><label>Step 6: Furniture & equipment</label><div class="grid-2col" id="furnitureContainer"></div></div>
+        <div class="form-row"><label>Step 7: Bar & catering setup</label><div class="options-group" id="barContainer"></div></div>
+        <div class="summary-box"><strong>Your custom plan summary</strong><br><span id="summaryText">Select options above to build your package.</span></div>
+        <button class="btn-primary" id="bookCustomBtn">Configure Your Experience</button>
+      </div>
+    </div>
+
+    <!-- Quote Request Form (unchanged) -->
+    <div class="quote-section" id="booking">
+      <h2>Request a Proposal</h2>
+      <p>Tell us what you need and we will prepare a tailored IJsvogel proposal for your event.</p>
+      <form id="quoteForm" class="quote-form">
+        <div class="form-group"><label>Company *</label><input type="text" id="company" required></div>
+        <div class="form-group"><label>Your name *</label><input type="text" id="name" required></div>
+        <div class="form-group"><label>Email *</label><input type="email" id="email" required></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="phone"></div>
+        <div class="form-group"><label>Package *</label><select id="packageSelect" required><option value="Corporate Experience Package">Corporate Experience Package</option><option value="Sports Group Package">Sports Group Package</option><option value="Event / Social Package">Event / Social Package</option><option value="Custom Package">Custom Package (design your own)</option></select></div>
+        <div class="form-group"><label>Number of people *</label><input type="number" id="peopleCount" required></div>
+        <div class="form-group"><label>Preferred date *</label><input type="date" id="preferredDate" required></div>
+        <div class="form-group"><label>Service level</label><select id="serviceLevel"><option value="Self-organized">Self-organized</option><option value="Supported">Supported</option><option value="Fully managed">Fully managed</option></select></div>
+        <div class="form-group full-width"><label>Special requests</label><textarea id="specialRequests" placeholder="Any specific requirements..."></textarea></div>
+        <div class="proposal-actions full-width">
+          <button type="submit" class="quote-btn">Request Proposal</button>
+          <p class="proposal-helper">We will contact you with a tailored proposal based on your request.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-main">
+      <div class="footer-brand">Province of Antwerp</div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="#about">About</a>
+        <a href="#packages">Packages</a>
+        <a href="#preview">Experience Preview</a>
+        <a href="#booking">Booking</a>
+      </nav>
+      <div class="footer-social" aria-label="Social links">
+        <a class="social-link" href="https://www.facebook.com/provincie.antwerpen" target="_blank" rel="noopener noreferrer" aria-label="Facebook">f</a>
+        <a class="social-link" href="https://www.instagram.com/provincieantwerpen" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="16" height="16" rx="5"></rect>
+            <circle cx="12" cy="12" r="3.5"></circle>
+            <circle cx="17" cy="7" r="0.8" fill="currentColor" stroke="none"></circle>
+          </svg>
+        </a>
+        <a class="social-link" href="https://www.linkedin.com/company/provincie-antwerpen" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+      </div>
+    </div>
+    <p class="footer-credit">Designed &amp; developed by Thomas More &ndash; Space &amp; Service Design (2026)</p>
+  </div>
+</footer>
+
+<script>
+  // ---------- CUSTOM PACKAGE LOGIC ----------
+  const spacesList = [
+    { id: "entrance", name: "Entrance Zone" }, { id: "meeting", name: "Meeting Area" }, { id: "workshop", name: "Workshop Area" },
+    { id: "outdoor", name: "Outdoor Area" }, { id: "hygiene", name: "Hygiene Zone" }, { id: "snack", name: "Snack Bar" }, { id: "event", name: "Event Space" }
+  ];
+  const activitiesMap = {
+    entrance: ["Welcome drinks", "Check-in desk", "Info point", "Photo moment"], meeting: ["Presentation", "Team sync", "Lecture", "Client pitch"],
+    workshop: ["Brainstorm", "Prototyping", "Training", "Group activity"], outdoor: ["Team run", "Yoga session", "Walk & talk", "Outdoor game"],
+    hygiene: ["Shower access", "Locker use", "Refresh zone", "Change room"], snack: ["Coffee break", "Lunch", "Networking drinks", "BBQ"],
+    event: ["Party", "Ceremony", "Concert", "Awards night"]
+  };
+  const furnitureOptions = [
+    { id: "chair_office", name: "Office chair with armrest" }, { id: "chair_conference", name: "Conference chair" },
+    { id: "chair_barstool", name: "Bar stool height adjustable" }, { id: "chair_lounge", name: "Lounge sofa / club chair" },
+    { id: "table_round", name: "Round table (120cm)" }, { id: "table_rectangular", name: "Rectangular table (180x80cm)" },
+    { id: "table_high", name: "High cocktail table (110cm)" }, { id: "table_workshop", name: "Workshop modular table" },
+    { id: "bar_counter", name: "Portable bar counter" }, { id: "glassware_set", name: "Glassware set" }
+  ];
+  const barOptions = [
+    { id: "no_bar", name: "No bar service" }, { id: "basic_bar", name: "Basic bar (soft drinks & beer)" },
+    { id: "cocktail_bar", name: "Cocktail bar with mixologist" }, { id: "wine_bar", name: "Premium wine & bubbles bar" },
+    { id: "snack_bar_full", name: "Full snack bar with hot/cold bites" }
+  ];
+
+  let selectedSpaces = new Set(), selectedActivities = {}, selectedService = null, selectedTime = null, selectedFurniture = new Set(), selectedBar = "no_bar";
+  const spacesContainer = document.getElementById('spacesContainer'), activitiesDiv = document.getElementById('activitiesContainer');
+  const furnitureContainer = document.getElementById('furnitureContainer'), barContainer = document.getElementById('barContainer');
+  const summarySpan = document.getElementById('summaryText'), bookBtn = document.getElementById('bookCustomBtn'), customPeopleInput = document.getElementById('customPeopleCount');
+
+  function renderSpaces() {
+    spacesContainer.innerHTML = '';
+    spacesList.forEach(space => {
+      const chip = document.createElement('div');
+      chip.className = `option-chip ${selectedSpaces.has(space.id) ? 'selected' : ''}`;
+      chip.textContent = space.name;
+      chip.dataset.id = space.id;
+      chip.addEventListener('click', () => {
+        if (selectedSpaces.has(space.id)) { selectedSpaces.delete(space.id); delete selectedActivities[space.id]; }
+        else { selectedSpaces.add(space.id); if (!selectedActivities[space.id]) selectedActivities[space.id] = activitiesMap[space.id][0]; }
+        renderSpaces(); renderActivities(); updateSummary();
+      });
+      spacesContainer.appendChild(chip);
+    });
+  }
+  function renderActivities() {
+    if (selectedSpaces.size === 0) { activitiesDiv.innerHTML = '<div style="color: #6c757d; padding: 0.5rem;">Select spaces first</div>'; return; }
+    let html = '';
+    for (let spaceId of selectedSpaces) {
+      const space = spacesList.find(s => s.id === spaceId);
+      const acts = activitiesMap[spaceId];
+      const currentAct = selectedActivities[spaceId] || acts[0];
+      let selectHtml = `<select class="activity-select" data-space="${spaceId}" style="background:white; border:1px solid #e2e8f0; border-radius:2rem; padding:0.4rem 0.8rem;">`;
+      acts.forEach(act => { selectHtml += `<option value="${act}" ${act === currentAct ? 'selected' : ''}>${act}</option>`; });
+      selectHtml += `</select>`;
+      html += `<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;"><span style="font-weight:500; min-width:120px;">${space.name}</span>${selectHtml}</div>`;
+    }
+    activitiesDiv.innerHTML = html;
+    document.querySelectorAll('.activity-select').forEach(select => {
+      select.addEventListener('change', (e) => { selectedActivities[select.dataset.space] = select.value; updateSummary(); });
+    });
+  }
+  function setupServiceTime() {
+    document.querySelectorAll('#serviceContainer .option-chip').forEach(el => {
+      el.addEventListener('click', () => { document.querySelectorAll('#serviceContainer .option-chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedService = el.dataset.service; updateSummary(); });
+    });
+    document.querySelectorAll('#timeContainer .option-chip').forEach(el => {
+      el.addEventListener('click', () => { document.querySelectorAll('#timeContainer .option-chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); selectedTime = el.dataset.time; updateSummary(); });
+    });
+  }
+  function renderFurniture() {
+    furnitureContainer.innerHTML = '';
+    furnitureOptions.forEach(f => {
+      const div = document.createElement('div'); div.className = 'furniture-item';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = f.id; cb.checked = selectedFurniture.has(f.id);
+      cb.addEventListener('change', () => { if (cb.checked) selectedFurniture.add(f.id); else selectedFurniture.delete(f.id); updateSummary(); });
+      const label = document.createElement('span'); label.textContent = f.name;
+      div.appendChild(cb); div.appendChild(label); furnitureContainer.appendChild(div);
+    });
+  }
+  function renderBar() {
+    barContainer.innerHTML = '';
+    barOptions.forEach(bar => {
+      const chip = document.createElement('div'); chip.className = `option-chip ${selectedBar === bar.id ? 'selected' : ''}`; chip.textContent = bar.name;
+      chip.addEventListener('click', () => { selectedBar = bar.id; renderBar(); updateSummary(); });
+      barContainer.appendChild(chip);
+    });
+  }
+  function updateSummaryLegacy() {
+    if (selectedSpaces.size < 2) { summarySpan.innerHTML = 'Select at least 2 spaces.'; return; }
+    let text = `<strong>Spaces:</strong> ${Array.from(selectedSpaces).map(id => spacesList.find(s=>s.id===id)?.name).join(', ')}<br><strong>Activities:</strong><br>`;
+    for (let id of selectedSpaces) text += `  - ${spacesList.find(s=>s.id===id)?.name}: ${selectedActivities[id] || '—'}<br>`;
+    text += `<strong>Service:</strong> ${selectedService ? (selectedService === 'self' ? 'Self-organized' : (selectedService === 'supported' ? 'Supported' : 'Fully managed')) : 'Not selected'}<br>`;
+    text += `<strong>Time:</strong> ${selectedTime ? (selectedTime === 'morning' ? 'Morning (9-12)' : selectedTime === 'afternoon' ? 'Afternoon (12-17)' : selectedTime === 'evening' ? 'Evening (17-21)' : 'Full day') : 'Not selected'}<br>`;
+    text += `<strong>Furniture:</strong> ${selectedFurniture.size ? Array.from(selectedFurniture).map(fid => furnitureOptions.find(f=>f.id===fid)?.name).join(', ') : 'None'}<br>`;
+    text += `<strong>Bar:</strong> ${barOptions.find(b => b.id === selectedBar)?.name || 'No bar'}`;
+    summarySpan.innerHTML = text;
+  }
+  function getCustomPeople() {
+    return Math.max(1, parseInt(customPeopleInput.value, 10) || 50);
+  }
+
+  function addQuantity(target, key, label, amount, mode = 'sum') {
+    const rounded = Math.ceil(amount);
+    if (rounded <= 0) return;
+    if (!target[key]) target[key] = { label, amount: 0 };
+    target[key].amount = mode === 'max' ? Math.max(target[key].amount, rounded) : target[key].amount + rounded;
+  }
+
+  function calculateCustomQuantities() {
+    const people = getCustomPeople();
+    const tableCount = Math.ceil(people / 4);
+    const quantities = {};
+    const zoneNotes = [];
+    const hasBarService = selectedBar !== 'no_bar' || selectedSpaces.has('snack');
+
+    selectedSpaces.forEach(spaceId => {
+      const activity = selectedActivities[spaceId] || '';
+
+      switch (spaceId) {
+        case 'workshop':
+          addQuantity(quantities, 'chairs', 'Chairs', people, 'max');
+          addQuantity(quantities, 'modularTables', 'Modular Tables', tableCount, 'max');
+          addQuantity(quantities, 'whiteboards', 'Whiteboards', Math.max(1, Math.ceil(people / 25)), 'max');
+          addQuantity(quantities, 'presenterStation', 'Presenter Station', 1, 'max');
+          zoneNotes.push(`Workshop Area: ${people} chairs, ${tableCount} modular tables, ${Math.max(1, Math.ceil(people / 25))} whiteboards, 1 presenter station.`);
+          break;
+
+        case 'meeting': {
+          addQuantity(quantities, 'chairs', 'Chairs', people, 'max');
+          const wantsUShape = activity === 'Team sync';
+          const wantsClassroom = selectedFurniture.has('table_rectangular') || selectedFurniture.has('table_round');
+
+          if (wantsUShape && people <= 30) {
+            addQuantity(quantities, 'modularTables', 'Modular Tables', tableCount, 'max');
+            zoneNotes.push(`Meeting Area: U-shape setup for ${people} people with ${people} chairs and ${tableCount} tables.`);
+          } else if (wantsUShape) {
+            addQuantity(quantities, 'modularTables', 'Modular Tables', tableCount, 'max');
+            zoneNotes.push(`Meeting Area: U-shape is recommended for max 25-30 people; use classroom or theater setup for ${people} people. Classroom estimate: ${people} chairs and ${tableCount} tables.`);
+          } else if (wantsClassroom) {
+            addQuantity(quantities, 'modularTables', 'Modular Tables', tableCount, 'max');
+            zoneNotes.push(`Meeting Area: classroom setup with ${people} chairs and ${tableCount} tables.`);
+          } else {
+            addQuantity(quantities, 'presenterTable', 'Presenter Table', 1, 'max');
+            zoneNotes.push(`Meeting Area: theater setup with ${people} chairs and 1 presenter table.`);
+          }
+          break;
+        }
+
+        case 'entrance':
+          addQuantity(quantities, 'welcomeDesk', 'Welcome Desk', 1, 'max');
+          addQuantity(quantities, 'standingTables', 'Standing Tables', Math.ceil(people / 10));
+          addQuantity(quantities, 'signagePoint', 'Signage Point', 1, 'max');
+          zoneNotes.push(`Entrance Zone: no full seating; 1 welcome desk, ${Math.ceil(people / 10)} standing tables, signage point, open circulation.`);
+          break;
+
+        case 'snack':
+          addQuantity(quantities, 'standingTables', 'Standing Tables', Math.ceil(people / 10));
+          addQuantity(quantities, 'casualSeats', 'Casual Seats', Math.min(18, Math.max(12, Math.ceil(people * 0.25))), 'max');
+          addQuantity(quantities, 'servingCounter', 'Serving Counter', 1, 'max');
+          zoneNotes.push(`Snack Bar: guests rotate through breaks; ${Math.ceil(people / 10)} standing tables, ${Math.min(18, Math.max(12, Math.ceil(people * 0.25)))} casual seats, 1 serving counter.`);
+          break;
+
+        case 'event':
+          addQuantity(quantities, 'cocktailTables', 'Cocktail Tables', Math.ceil(people / 10));
+          addQuantity(quantities, 'loungeIslands', 'Lounge Islands', Math.ceil(people / 25));
+          if (activity === 'Party' || activity === 'Concert' || activity === 'Awards night') addQuantity(quantities, 'stageArea', 'Stage / DJ Area', 1, 'max');
+          if (selectedFurniture.has('chair_conference')) addQuantity(quantities, 'chairs', 'Chairs', Math.ceil(people / 4), 'max');
+          zoneNotes.push(`Event Space: standing event with ${Math.ceil(people / 10)} cocktail tables and ${Math.ceil(people / 25)} lounge islands; limited chairs unless a seated event is selected.`);
+          break;
+
+        case 'outdoor':
+          addQuantity(quantities, 'benches', 'Outdoor Benches', Math.ceil(people / 20), 'max');
+          addQuantity(quantities, 'outdoorStandingTables', 'Outdoor Standing Tables', Math.ceil(people / 15), 'max');
+          addQuantity(quantities, 'activityPoints', 'Activity Points', Math.max(1, Math.ceil(people / 25)), 'max');
+          zoneNotes.push(`Outdoor Area: support furniture only; benches, outdoor standing tables and activity points, no full chair/table setup.`);
+          break;
+
+        case 'hygiene':
+          addQuantity(quantities, 'benches', 'Benches', Math.ceil(people / 20), 'max');
+          addQuantity(quantities, 'lockerZones', 'Locker Zones', Math.max(1, Math.ceil(people / 25)), 'max');
+          addQuantity(quantities, 'mirrorPoints', 'Mirror Points', Math.max(1, Math.ceil(people / 40)), 'max');
+          zoneNotes.push(`Hygiene Zone: no chairs or tables; benches, lockers, mirrors and shower support only.`);
+          break;
+      }
+    });
+
+    if (selectedFurniture.has('chair_lounge')) addQuantity(quantities, 'casualSeats', 'Casual Seats', Math.min(18, Math.max(12, Math.ceil(people * 0.25))), 'max');
+    if (selectedFurniture.has('table_high') && !selectedSpaces.has('snack') && !selectedSpaces.has('entrance')) addQuantity(quantities, 'standingTables', 'Standing Tables', Math.ceil(people / 10));
+    if (selectedFurniture.has('bar_counter') || hasBarService) addQuantity(quantities, 'servingCounter', 'Serving Counter', 1, 'max');
+    if (selectedService === 'supported') addQuantity(quantities, 'supportStaff', 'Support Staff', Math.max(1, Math.ceil(people / 75)), 'max');
+    if (selectedService === 'managed') addQuantity(quantities, 'supportStaff', 'Support Staff', Math.max(2, Math.ceil(people / 50)), 'max');
+
+    return { people, quantities: Object.values(quantities), zoneNotes };
+  }
+
+  function updateSummary() {
+    if (selectedSpaces.size < 2) { summarySpan.innerHTML = 'Select at least 2 spaces.'; return; }
+    const estimate = calculateCustomQuantities();
+    let text = `<strong>People:</strong> ${estimate.people}<br>`;
+    text += `<strong>Spaces:</strong> ${Array.from(selectedSpaces).map(id => spacesList.find(s=>s.id===id)?.name).join(', ')}<br><strong>Activities:</strong><br>`;
+    for (let id of selectedSpaces) text += `  - ${spacesList.find(s=>s.id===id)?.name}: ${selectedActivities[id] || '-'}<br>`;
+    text += `<strong>Service:</strong> ${selectedService ? (selectedService === 'self' ? 'Self-organized' : (selectedService === 'supported' ? 'Supported' : 'Fully managed')) : 'Not selected'}<br>`;
+    text += `<strong>Time:</strong> ${selectedTime ? (selectedTime === 'morning' ? 'Morning (9-12)' : selectedTime === 'afternoon' ? 'Afternoon (12-17)' : selectedTime === 'evening' ? 'Evening (17-21)' : 'Full day') : 'Not selected'}<br>`;
+    text += `<strong>Furniture:</strong> ${selectedFurniture.size ? Array.from(selectedFurniture).map(fid => furnitureOptions.find(f=>f.id===fid)?.name).join(', ') : 'Auto-calculated by selected spaces'}<br>`;
+    text += `<strong>Bar:</strong> ${barOptions.find(b => b.id === selectedBar)?.name || 'No bar'}`;
+    text += `<strong class="quantities-title">Estimated Setup Quantities</strong>`;
+    text += `<div class="quantity-grid">${estimate.quantities.map(item => `<div class="quantity-card"><strong>${item.amount}</strong><span>${item.label}</span></div>`).join('')}</div>`;
+    text += `<div><strong>Zone logic:</strong><br>${estimate.zoneNotes.map(note => `- ${note}`).join('<br>')}</div>`;
+    text += `<div class="quantity-note">Quantities are estimated based on 4 people per table and can be adjusted after confirmation.</div>`;
+    summarySpan.innerHTML = text;
+  }
+
+  function bookCustom() {
+    if (selectedSpaces.size < 2) { alert('Select at least 2 spaces.'); return; }
+    if (!selectedService) { alert('Select service level.'); return; }
+    if (!selectedTime) { alert('Select time block.'); return; }
+    document.getElementById('packageSelect').value = "Custom Package";
+    document.getElementById('peopleCount').value = getCustomPeople();
+    document.getElementById('serviceLevel').value = selectedService === 'self' ? 'Self-organized' : (selectedService === 'supported' ? 'Supported' : 'Fully managed');
+    alert('Custom package saved. Complete the quote form below.');
+  }
+  const quoteForm = document.getElementById('quoteForm');
+  quoteForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const company = document.getElementById('company').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const peopleCount = document.getElementById('peopleCount').value;
+    const preferredDate = document.getElementById('preferredDate').value;
+    if (!company || !name || !email || !peopleCount || !preferredDate) { alert('Please fill all required fields.'); return; }
+    alert(`Thank you ${name} from ${company}!\nA PDF quote will be sent to ${email}.`);
+    quoteForm.reset();
+  });
+
+  // Initialize
+
+  renderSpaces(); renderFurniture(); renderBar(); renderActivities(); setupServiceTime(); updateSummary();
+  customPeopleInput.addEventListener('input', updateSummary);
+  bookBtn.addEventListener('click', bookCustom);
+
+  // ---------- SPACE CONFIGURATION PLANNER LOGIC ----------
+  const zoneNames = {
+    entrance: "Entrance Zone",
+    meeting: "Meeting Area",
+    workshop: "Workshop Area",
+    outdoor: "Outdoor Area",
+    snack: "Snack Bar",
+    event: "Event Space",
+    hygiene: "Hygiene Zone"
+  };
+
+  let selectedZonesSet = new Set(["entrance", "meeting", "workshop"]);
+
+  const packageSelect = document.getElementById("packageTypeSelect");
+  const peopleInput = document.getElementById("peopleCountPlanner");
+  const recArea = document.getElementById("recommendationsArea");
+  const zonesChips = document.querySelectorAll(".zone-chip");
+  const previewBtn = document.getElementById("previewSetupBtn");
+
+  function getRecommendations(pkg, people, selectedZones) {
+    const recs = [];
+    const standingCapacity = Math.floor(people * 1.2);
+
+    function entranceTables(peopleCount) {
+      return Math.max(1, Math.ceil(peopleCount / 10));
+    }
+
+    function snackTables(peopleCount) {
+      return entranceTables(peopleCount);
+    }
+
+    function eventStandingTables(peopleCount) {
+      return Math.max(1, Math.ceil(peopleCount / 10));
+    }
+
+    function eventLoungeIslands(peopleCount) {
+      return Math.max(1, Math.ceil(peopleCount / 25));
+    }
+
+    selectedZones.forEach(zone => {
+      const rec = {
+        zone: zoneNames[zone],
+        furniture: '',
+        chairs: 0,
+        tables: 0,
+        capacity: '',
+        layout: '',
+        staff: '',
+        equipment: '',
+        circulation: '',
+        catering: 'Upon request',
+        why: '',
+        userFlow: ''
+      };
+
+      switch (zone) {
+        case 'entrance':
+          rec.furniture = 'Welcome desk, signage, standing tables';
+          rec.tables = entranceTables(people);
+          rec.chairs = 0;
+          rec.capacity = `${people} total (brief stay) — approx. ${rec.tables} standing tables`;
+          rec.layout = 'Open circulation for registration and arrivals';
+          rec.staff = '1 welcome/support person';
+          rec.equipment = 'Registration tablet, signage';
+          rec.circulation = 'Fast arrival flow, clear paths to main zones';
+          rec.why = 'Quick check-in and directional space; minimal seating.';
+          rec.userFlow = 'Arrive → Register → Move to main activity zone';
+          break;
+
+        case 'meeting':
+          rec.furniture = 'Chairs, presentation screen, speaker table';
+          rec.chairs = people;
+          if (pkg === 'corporate') {
+            rec.tables = Math.ceil(people / 4); // classroom, 4 people per table
+            rec.layout = 'Classroom / boardroom (tables for groups)';
+          } else {
+            rec.tables = 0; // theater
+            rec.layout = 'Theater / presentation';
+          }
+          rec.capacity = `${people} seated / ${standingCapacity} standing`;
+          rec.staff = 'Event coordinator + tech support';
+          rec.equipment = 'Projector, screen, microphones';
+          rec.circulation = people > 100 ? 'Wide aisles, multiple access points' : 'Standard aisles';
+          rec.why = 'Main presentation area sized to audience; choose classroom for interactive sessions.';
+          rec.userFlow = 'Move from entrance to seating → Breaks at Snack/Outdoor';
+          break;
+
+        case 'workshop':
+          rec.furniture = 'Modular tables, chairs, whiteboards, pinboards';
+          rec.chairs = people;
+          rec.tables = Math.ceil(people / 4); // 4 people per modular table
+          rec.capacity = `${people} active participants`;
+          rec.layout = 'Clustered tables for group work';
+          rec.staff = 'Facilitators + event coordinator';
+          rec.equipment = 'Displays, markers, flipcharts';
+          rec.circulation = 'Clear lanes between clusters for collaboration';
+          rec.why = 'Enables small-group interactions and hands-on activities.';
+          rec.userFlow = 'Participants move to assigned clusters → Rotate for sharing sessions';
+          break;
+
+        case 'snack':
+          rec.furniture = 'Bar counter, standing/buffet tables, lounge corners';
+          rec.tables = snackTables(people);
+          rec.chairs = Math.min(18, Math.max(12, Math.ceil(people * 0.25)));
+          rec.capacity = `${Math.min(people, rec.chairs)} seated / ${standingCapacity} standing (break service)`;
+          rec.layout = 'Social flow with quick access to refreshments';
+          rec.staff = 'Bar / catering staff';
+          rec.equipment = 'Serving counters, refrigeration, POS';
+          rec.circulation = 'Dedicated queue and pickup to avoid congestion';
+          rec.catering = 'Managed via Zilvermeer collaboration';
+          rec.why = 'Supports quick breaks and networking without blocking main flows.';
+          rec.userFlow = 'Short breaks from main zone → Snack Bar → Return to activities';
+          break;
+
+        case 'event':
+          rec.furniture = 'Standing tables, lounge islands, stage area (optional)';
+          rec.tables = eventStandingTables(people);
+          const islands = eventLoungeIslands(people);
+          rec.chairs = pkg === 'event' ? Math.ceil(people / 4) : 0;
+          rec.capacity = `${people} guests (flexible standing). ${islands} lounge islands suggested`;
+          rec.layout = 'Open plan with central activity and side social zones';
+          rec.staff = 'Event coordinator + crowd-flow support';
+          rec.equipment = 'Lighting, sound, stage (if required)';
+          rec.circulation = 'Radial flow with clear access to exits and bars';
+          rec.why = 'Flexible area for networking, performances, or large gatherings.';
+          rec.userFlow = 'Guests circulate freely → Visit snack/outdoor or stage areas';
+          break;
+
+        case 'outdoor':
+          rec.furniture = 'Benches, outdoor standing tables, parasols, activity points';
+          rec.tables = Math.ceil(people / 15);
+          rec.chairs = 0;
+          rec.capacity = `${people} participants (outdoor activities; support furniture only)`;
+          rec.layout = 'Open outdoor flow, clear markers for activity points';
+          rec.staff = 'Activity guide (if selected)';
+          rec.equipment = 'PA system, signage, temporary shelters';
+          rec.circulation = 'Unconstrained movement with marked routes';
+          rec.why = 'Designed for movement-based activities and fresh-air programs.';
+          rec.userFlow = 'Gather → Perform outdoor activity → Return to main zones or snack';
+          break;
+
+        case 'hygiene':
+          rec.furniture = 'Benches, locker units, mirrors';
+          rec.tables = 0;
+          rec.chairs = 0;
+          rec.capacity = 'Support facilities for changing and recovery';
+          rec.layout = 'Functional stalls and lockers with privacy';
+          rec.staff = 'Hygiene/support attendant (optional)';
+          rec.equipment = 'Showers, lockers, towel service';
+          rec.circulation = 'One-way flow to maintain privacy and turnover';
+          rec.why = 'Support zone for participants needing showers/lockers after activities.';
+          rec.userFlow = 'Use as needed during event; separate from main circulation';
+          break;
+
+        default:
+          rec.furniture = 'Flexible furniture';
+          rec.chairs = Math.min(people, 20);
+          rec.tables = Math.ceil(people / 4);
+          rec.capacity = `${people} (mixed use)`;
+          rec.layout = 'Flexible';
+          rec.staff = 'Event coordinator';
+          rec.equipment = 'Standard AV';
+          rec.circulation = 'Standard flow';
+          rec.why = 'Generic fallback setup.';
+          rec.userFlow = 'Standard guest movement';
+      }
+
+      recs.push(rec);
+    });
+
+    return recs;
+  }
+
+  function updatePlanner() {
+    const pkg = packageSelect.value;
+    const people = parseInt(peopleInput.value) || 50;
+    const selectedZones = Array.from(selectedZonesSet);
+    const recs = getRecommendations(pkg, people, selectedZones);
+
+    recArea.innerHTML = "";
+
+    if (selectedZones.length === 0) {
+      recArea.innerHTML = '<div style="padding: 2rem; text-align: center; color: #6b7280;">Select at least one zone to see recommendations</div>';
+      return;
+    }
+
+    recs.forEach(rec => {
+      const card = document.createElement("div");
+      card.className = "rec-card";
+
+      card.innerHTML = `
+        <h4><i class="fas fa-arrows-alt"></i> ${rec.zone}</h4>
+        <p><strong>Furniture:</strong> ${rec.furniture}</p>
+        <p><strong>Chairs:</strong> ${rec.chairs} | <strong>Tables:</strong> ${rec.tables}</p>
+        <p><strong>Capacity:</strong> ${rec.capacity}</p>
+        <p><strong>Layout:</strong> ${rec.layout}</p>
+        <p><strong>Staff support:</strong> ${rec.staff}</p>
+        <p><strong>Catering:</strong> ${rec.catering}</p>
+        <p><strong>Equipment:</strong> ${rec.equipment}</p>
+        <p><strong>Circulation:</strong> ${rec.circulation}</p>
+        <hr style="border:none; border-top:1px dashed #eee; margin:0.6rem 0;">
+        <p style="margin-top:0.4rem; font-style: italic; color:#6b7280"><strong>Why this setup?</strong> ${rec.why}</p>
+        <p style="margin-top:0.25rem; font-style: italic; color:#6b7280"><strong>User flow:</strong> ${rec.userFlow}</p>
+      `;
+
+      recArea.appendChild(card);
+    });
+  }
+
+  zonesChips.forEach(chip => {
+    if (selectedZonesSet.has(chip.dataset.zone)) {
+      chip.classList.add("selected");
+    }
+
+    chip.addEventListener("click", () => {
+      const zone = chip.dataset.zone;
+
+      if (selectedZonesSet.has(zone)) {
+        selectedZonesSet.delete(zone);
+        chip.classList.remove("selected");
+      } else {
+        selectedZonesSet.add(zone);
+        chip.classList.add("selected");
+      }
+
+      updatePlanner();
+    });
+  });
+
+  packageSelect.addEventListener("change", updatePlanner);
+  peopleInput.addEventListener("input", updatePlanner);
+  
+  previewBtn.addEventListener("click", () => {
+    const pkg = packageSelect.value;
+    const people = parseInt(peopleInput.value) || 50;
+    const zones = Array.from(selectedZonesSet).join(", ");
+    alert(`Preview Setup\n\nPackage: ${pkg}\nGroup size: ${people}\nZones: ${zones}\n\nSend configuration to booking form.`);
+    document.getElementById('packageSelect').value = pkg === 'custom' ? 'Custom Package' : pkg.charAt(0).toUpperCase() + pkg.slice(1) + ' Package';
+    document.getElementById('peopleCount').value = people;
+    document.getElementById('customPeopleCount').value = people;
+    updateSummary();
+    document.getElementById('create').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  function initPreviewCards() {
+    document.querySelectorAll('.preview-card').forEach(card => {
+      const mainImg = card.querySelector('.preview-img img');
+      const thumbs = Array.from(card.querySelectorAll('.thumb'));
+      const leftArrow = card.querySelector('.image-arrow.left');
+      const rightArrow = card.querySelector('.image-arrow.right');
+      let activeIndex = thumbs.findIndex(t => t.classList.contains('active'));
+      if (activeIndex < 0) activeIndex = 0;
+
+      thumbs.forEach((thumb, index) => {
+        const src = thumb.dataset.src;
+        thumb.style.backgroundImage = `url('${src}')`;
+        thumb.addEventListener('click', () => {
+          activate(index);
+        });
+      });
+
+      function activate(index) {
+        if (index < 0) index = thumbs.length - 1;
+        if (index >= thumbs.length) index = 0;
+        activeIndex = index;
+        const src = thumbs[activeIndex].dataset.src;
+        mainImg.src = src;
+        thumbs.forEach((thumb, thumbIndex) => {
+          thumb.classList.toggle('active', thumbIndex === activeIndex);
+        });
+      }
+
+      leftArrow.addEventListener('click', () => activate(activeIndex - 1));
+      rightArrow.addEventListener('click', () => activate(activeIndex + 1));
+    });
+  }
+
+  initPreviewCards();
+
+  updatePlanner();
+
+  // Active nav highlight on scroll (updated to include about section)
+  window.addEventListener('scroll', () => {
+    const sections = ['home', 'about', 'planner', 'packages', 'preview', 'create', 'booking'];
+    const navLinks = document.querySelectorAll('.nav-link');
+    let current = '';
+    sections.forEach(section => {
+      const el = document.getElementById(section);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) current = section;
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) link.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
